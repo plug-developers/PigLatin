@@ -1,0 +1,112 @@
+from __future__ import division
+import nltk, re, pprint
+
+from urllib.request import urlopen
+
+#from nltk.book import *
+# I imported following lineinstal
+from nltk import word_tokenize
+
+from bs4 import BeautifulSoup
+
+from nltk.corpus import gutenberg
+from nltk.corpus import brown
+from nltk.corpus import wordnet as wn
+
+
+SimpleText = "I am passionate about technology and creating products that are fun to use. My passion for technology started when I was young. I would constantly " \
+             "irritate my brother by taking apart his gaming consoles out of curiosity of how they were made. Lucky for me, I was always able to put them back together! " \
+             "Throughout my life I have had amazing opportunities to be apart of research teams, software development teams, test automation teams, and even incorporate " \
+             "my own LLC for an app idea that I had. All of these opportunities have taught me valuable insights about working on a team, user experiences, and leadership. " \
+             "An opportunity working with Spreetail’s product management team would give me the training and experience I need to be a great product manager."
+
+
+def exercise6():
+#Part B  - one capital letter and zero or more lowercase letters
+    print("part B:")
+    print(nltk.re_show(r'[A-Z][a-z]*' , "DoeS THIS string work?"))
+
+#Part C - Regex accepts a word starting with p followed by 0 or up to 2 vowels ending in  p
+    print("part C:")
+    print(nltk.re_show(r'p[aeiou]{,2}t', 'Pat drinks plenty pibs for his pop'))
+
+#Part F- - one or more alphanumeric characters or one or more charcters that are neither alpahnumeric nor whitespace
+    print("part F:")
+    print(nltk.re_show(r'\w+|[^\w\s]+', '... this should not work ... \n'))
+
+
+def exercise7():
+
+    (nltk.re_show('(an?|the)', SimpleText))
+
+
+
+
+def unknown():
+    import urllib
+    wnl = nltk.WordNetLemmatizer()
+    url = "https://www.cs.utexas.edu/~vl/notes/dijkstra.html"
+    html = urllib.request.urlopen(url).read().decode("utf8")
+    raw = BeautifulSoup(html, features = "lxml").get_text()
+    lowercaseWords = re.findall(r'[a-z]+', raw)
+    lemmaOnWords = [wnl.lemmatize(word) for word in lowercaseWords]
+    lowercaseWords1 = nltk.word_tokenize(raw)
+    lowercaseWords1 = [word for word in lowercaseWords1 if word.isalpha()
+    if word.islower()]
+    lemmaOnWords1 = [wnl.lemmatize(word) for word in lowercaseWords1]
+    knownWords = nltk.corpus.words.words()
+    unknownWords = [word for word in lowercaseWords if word not in knownWords]
+    unknownWords1 = [word for word in lowercaseWords1 if word not in knownWords]
+    differenceInWords = [word for word in unknownWords if word not in unknownWords1]
+    unknownWordsWLemma = [word for word in lemmaOnWords if word not in knownWords]
+    unknownWordsWLemma1 = [word for word in lemmaOnWords1 if word not in knownWords]
+    print(len(unknownWords))
+    print(len(unknownWords1))
+    print("Prediction {}".format(271-162))
+    print(len(differenceInWords))
+    print(len(unknownWordsWLemma))
+    print(len(unknownWordsWLemma1))
+
+def exercise21():
+    unknown()
+
+def pigLatin(word):
+    import string
+    consonants = []
+    if word in string.punctuation or word == " ":
+        return word
+    elif word.startswith("qu"):
+        consonants = re.search(r'^qu', word)
+    elif word.startswith("y"):
+        consonants = re.search(r'^y', word)
+    elif "y" in word[1:]:
+        consonants = re.findall(r'^([^aeiouAEIOUy]*)', word)
+    else:
+        consonants = re.findall(r'^([^aeiouAEIOU]*)', word)
+    return (word[len(consonants[0]):] + consonants[0] + "ay")
+
+
+def exercise25():
+    print(SimpleText)
+    words = [word for word in word_tokenize(SimpleText)]
+    pigLatinOnSimpleText = []
+    for word in words:
+        pigLatinOnSimpleText.append(pigLatin(word))
+    print(" ".join(pigLatinOnSimpleText))
+
+
+def exercise(exNum):
+    print("Exercise {}".format(exNum))
+    globals()["exercise" + str(exNum)]()
+    print("")
+
+def main():
+    #exercise(6)
+    #exercise(7)
+    #exercise(21)
+     exercise(25)
+
+
+if __name__ == "__main__":
+    main()
+
