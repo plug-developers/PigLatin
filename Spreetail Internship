@@ -1,0 +1,55 @@
+from __future__ import division
+import nltk, re, pprint
+
+from urllib.request import urlopen
+
+#from nltk.book import *
+# I imported following lineinstal
+from nltk import word_tokenize
+
+from bs4 import BeautifulSoup
+
+from nltk.corpus import gutenberg
+from nltk.corpus import brown
+from nltk.corpus import wordnet as wn
+
+
+SimpleText = "I am passionate about technology and creating products that are fun to use. My passion for technology started when I was young. I would constantly " \
+             "irritate my brother by taking apart his gaming consoles out of curiosity of how they were made. Lucky for me, I was always able to put them back together! " \
+             "Throughout my life I have had amazing opportunities to be apart of research teams, software development teams, test automation teams, and even incorporate " \
+             "my own LLC for an app idea that I had. All of these opportunities have taught me valuable insights about working on a team, user experiences, and leadership. " \
+             "An opportunity working with Spreetail’s product management team would give me the training and experience I need to be a great product manager."
+
+def pigLatin(word):
+    import string
+    consonants = []
+    if word in string.punctuation or word == " ":
+        return word
+    elif word.startswith("qu"):
+        consonants = re.search(r'^qu', word)
+    elif word.startswith("y"):
+        consonants = re.search(r'^y', word)
+    elif "y" in word[1:]:
+        consonants = re.findall(r'^([^aeiouAEIOUy]*)', word)
+    else:
+        consonants = re.findall(r'^([^aeiouAEIOU]*)', word)
+    return (word[len(consonants[0]):] + consonants[0] + "ay")
+
+
+def spreetailInternship():
+    print(SimpleText)
+    words = [word for word in word_tokenize(SimpleText)]
+    pigLatinOnSimpleText = []
+    for word in words:
+        pigLatinOnSimpleText.append(pigLatin(word))
+    print(" ".join(pigLatinOnSimpleText))
+
+
+
+def main():
+    spreetailInternship()
+
+
+if __name__ == "__main__":
+    main()
+
